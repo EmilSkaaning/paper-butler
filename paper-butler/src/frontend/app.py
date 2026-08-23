@@ -662,19 +662,17 @@ def main() -> None:
                 if st.button(
                     "✨",
                     key="bulk_generate_icon",
-                    disabled=not hf_token_configured,
+                    disabled=not hf_token_configured or not checked_pids,
                     help=(
-                        GENERATE_METADATA_HELP
-                        if hf_token_configured
-                        else HF_TOKEN_MISSING_HELP
+                        HF_TOKEN_MISSING_HELP
+                        if not hf_token_configured
+                        else "Select papers to generate metadata"
+                        if not checked_pids
+                        else GENERATE_METADATA_HELP
                     ),
                     type="secondary",
                 ):
-                    if checked_pids:
-                        _stage_bulk_action("confirm_generate_pids", checked_pids)
-                    else:
-                        _clear_bulk_actions()
-                        icon_bar_message = ("warning", "No papers selected.")
+                    _stage_bulk_action("confirm_generate_pids", checked_pids)
             with icon_col3:
                 if st.button(
                     "🪄",
@@ -1174,9 +1172,11 @@ def main() -> None:
                 key=f"generate_btn_{pid}",
                 disabled=not pdf_available or not hf_token_configured,
                 help=(
-                    GENERATE_METADATA_HELP
-                    if hf_token_configured
-                    else HF_TOKEN_MISSING_HELP
+                    HF_TOKEN_MISSING_HELP
+                    if not hf_token_configured
+                    else "PDF must be downloaded to generate metadata"
+                    if not pdf_available
+                    else GENERATE_METADATA_HELP
                 ),
             ):
                 has_unsaved_edits = (

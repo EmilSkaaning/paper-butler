@@ -4583,10 +4583,10 @@ class TestGenerateMetadataForSelected:
 class TestMainBulkGenerateFlow:
     """Test suite for main()'s sidebar icon-bar bulk generate flow."""
 
-    def test_bulk_generate_with_no_checked_papers_warns(
+    def test_bulk_generate_icon_is_disabled_with_no_checked_papers(
         self, fake_st: MagicMock, mocker: MockerFixture
     ) -> None:
-        """Test clicking the bulk generate icon with nothing checked just warns."""
+        """Test the bulk generate icon is disabled with dynamic tooltip when no papers are checked."""
         pid = "a" * 32
         entry = PaperIndexEntry(
             title="Some Paper", pdf_file_id="pdf1", meta_file_id="meta1", folder_id="f1"
@@ -4598,15 +4598,13 @@ class TestMainBulkGenerateFlow:
         fake_st.session_state.selected_paper = None
         fake_st.file_uploader.return_value = None
         fake_st.checkbox.return_value = False
-        fake_st.button.side_effect = lambda label, **kw: (
-            kw.get("key") == "bulk_generate_icon"
-        )
+        fake_st.button.return_value = False
         mocker.patch.object(app, "st_keyup", return_value="")
         mocker.patch.object(app, "authenticate_user", return_value=MagicMock())
+        mocker.patch.dict("os.environ", {"HF_TOKEN": "some-token"}, clear=True)
 
         app.main()
 
-        fake_st.warning.assert_any_call("No papers selected.")
         assert "confirm_generate_pids" not in fake_st.session_state
 
         generate_call = next(
@@ -4614,7 +4612,8 @@ class TestMainBulkGenerateFlow:
             for c in fake_st.button.call_args_list
             if c.kwargs.get("key") == "bulk_generate_icon"
         )
-        assert generate_call.kwargs.get("type") == "secondary"
+        assert generate_call.kwargs.get("disabled") is True
+        assert generate_call.kwargs.get("help") == "Select papers to generate metadata"
 
     def test_bulk_generate_icon_stays_secondary_when_a_paper_is_checked(
         self, fake_st: MagicMock, mocker: MockerFixture
@@ -4704,8 +4703,9 @@ class TestMainBulkGenerateFlow:
             for c in fake_st.button.call_args_list
             if c.kwargs.get("key") == "bulk_generate_icon"
         )
-        assert bulk_call.kwargs.get("disabled") is False
-        assert bulk_call.kwargs.get("help") == GENERATE_METADATA_HELP
+        # It's disabled because no papers are checked.
+        assert bulk_call.kwargs.get("disabled") is True
+        assert bulk_call.kwargs.get("help") == "Select papers to generate metadata"
 
         missing_call = next(
             c
