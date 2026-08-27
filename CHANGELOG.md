@@ -2,7 +2,72 @@
 
 All notable changes to this project are documented in this file.
 
-## [1.0.0] - 2026-08-27
+## [1.0.1] - 2026-08-27
+
+
+
+### Features
+
+- Initialize project structure with FastAPI and Streamlit apps (Task 1) ([153f3be](../../commit/153f3be48eda570f41f8435f78fb08263057c659))
+- Add google drive api dependencies ([cbf9294](../../commit/cbf92940a9d7b4d12b9d424a0f7b6ba495245e9b))
+- Add google drive folder creation logic ([5141de3](../../commit/5141de388b83f95e256ef8ca5a3389248b758a8c))
+- Connect streamlit app to google drive ([ea96cfb](../../commit/ea96cfbdcac606c45444bc22cd290165e8f6223d))
+- Add PDF listing and sync methods ([f457025](../../commit/f457025f8388545d65523fd0d9b9975e8edae3e1))
+- Serve local papers folder statically ([296a8d5](../../commit/296a8d5c7e342144064ad907c2401b7722a421ca))
+- Add split-view PDF viewer and sync logic ([6d89fda](../../commit/6d89fdac4f27d49267959dd623ddcf359c33f98c))
+- Add bulk upload and bulk delete functionality ([4ecbf4b](../../commit/4ecbf4b046f74b67feebd11b1dfd7d8d81e14033))
+- Redesign left pane to classic tick-box layout ([780dc53](../../commit/780dc539f18d0eb8156f3a566608bc9ca06da800))
+- Enable real-time search filtering with st-keyup ([c0050f3](../../commit/c0050f3e7534d542e9fbf0ebcb6932202e46b757))
+- Sort pdfs alphabetically and hide extension ([0dd8218](../../commit/0dd821823d408313ec65e64ee4a404b646af5f54))
+- Add testmon and coverage to test pipeline ([0a09684](../../commit/0a0968496a4ba5ffc58b8eac97505adddab8eaaa))
+- Add vulture workflow for dead code detection ([2ea9b26](../../commit/2ea9b262e8d3dc195f99170b513afb14b635849c))
+- Add pyrefly workflow for static type checking ([c67f75d](../../commit/c67f75dc5b5d610f4fc1af399bb560a58cc5916e))
+- Add PaperMetadata pydantic model ([34e5180](../../commit/34e51807be59a1ecd22547bca631492160747158))
+- Add metadata storage functions ([52a4293](../../commit/52a42930b1ff786266a8fac0001d5545bc998ce6))
+- Sync metadata files on startup ([22a8618](../../commit/22a861840422a7c5a9ef51d5dd202e076acb899b))
+- Add metadata sidebar and edit form ([4b9bac4](../../commit/4b9bac40338d58a4bb8d62aaa228c0a29b81bd9a))
+- Float metadata panel on right side ([fd8869a](../../commit/fd8869ae2b5cf3998d6b3e108ca143adcfd29f60))
+- Native sidebar and metadata left of PDF ([334e174](../../commit/334e174c0df69db4b1d9f86647447ffd54da41e0))
+- Add tags/status to PaperIndexEntry ([79bcd7b](../../commit/79bcd7be9be655efda7897fcfe4c493b7c3da287))
+- Expand sidebar, show library ID ([2034320](../../commit/2034320bdc7b77408b2e1bc852b3b305b92f8907))
+- Collapse upload into a dropdown ([0ce48e5](../../commit/0ce48e5d88b54c5582f18f3341e717c042431895))
+- Icon bar trash and checkboxes ([b3e028d](../../commit/b3e028d629dc2fdb28757face1548a95bb48f7cc))
+- Status/tag filters, status icon ([a61b641](../../commit/a61b6416df969fbe241108fc795100ee21fd4de1))
+- Add Hugging Face metadata generation ([ada2cf1](../../commit/ada2cf1f3397a84199b6f08b10ceb2222fd87f1f))
+- Add generate-metadata tooltip and bulk icon ([2bf0004](../../commit/2bf00041a61aadf14976393a3598cface814ca7c))
+- Reuse existing tags in tag generation ([533d44a](../../commit/533d44ae89c3594030704507e5fbeaeeda027cf3))
+- Warn before overwriting existing metadata ([7442266](../../commit/744226632338a63660e0a4f6050dbfb0279851ee))
+- Strip PDF extraction noise before generation ([6d833cc](../../commit/6d833ccdd05eae2173cf29f80e531376039ce906))
+- Flag papers with similar embeddings persistently ([9e68e65](../../commit/9e68e6525121c37426a27059e2e173c386d6ccde))
+- Add generate-missing-metadata icon ([937a176](../../commit/937a176f9916f12509fba800f2607d9f9eeef5d6))
+- Add progress bar for multi-file paper uploads ([93195b8](../../commit/93195b887033490ca7cacaf7cd7397f78f003435))
+- Persist PDF highlights via re-upload ([ec4bb28](../../commit/ec4bb283ba132de5fdcadffb59b4eaf8fbe3f551))
+- Bundle desktop OAuth client, drop per-user setup ([3510eed](../../commit/3510eed6e8133b4363150b619633841081595326))
+- Auto-persist PDF highlights via embedded pdf.js viewer ([f6169d8](../../commit/f6169d8da85c68b879e0257f4abba9982db1e4a8))
+- Shrink metadata panel width, defer drag-resize ([0c509d2](../../commit/0c509d2d2e72f363347d9b5a499eed60c7d117cf))
+- Add delete library button to library selector ([4424dd6](../../commit/4424dd6d48cb1352978a98a6ae7db5a15e97d8fc))
+- Add Similar filter for duplicate-flagged papers ([cc440d1](../../commit/cc440d17ba64302d40efba546c7ecceab17bf3ab))
+- Apply Forest Library brand theme to Streamlit UI ([d906a96](../../commit/d906a9695e576f5755e5112d8e1614c4113989f8))
+- Wire in draft logo as favicon and sidebar mark ([7212940](../../commit/72129401d276043e41016651372b763d6085b482))
+- Replace emoji title with centered logo lockup ([04a7288](../../commit/04a72883095d5fb7fed93b8bec5cd44814870a0a))
+- List skipped duplicate filenames after upload ([9493a92](../../commit/9493a92fb4791aee1c70378d0072c44791b7f8fd))
+- Add bulk label add/remove to icon bar ([cb1c0ea](../../commit/cb1c0eaceea4c1a9786a594c6445123e1e291a26))
+- Add mark-all checkbox scoped to library filter ([29517b5](../../commit/29517b5581fb75b8cc53ba94902e667114ab2032))
+- Stack sidebar filters, add tag search + clear icon ([8d23260](../../commit/8d23260d58d5777ce22e14de614dd29367ff03c3))
+- Enable fullscreen for embedded PDF.js viewer ([ca6d783](../../commit/ca6d783854a8bfae6df0f3db7e37f2eb7f5798b7))
+- Add expand-to-viewport toggle for PDF viewer ([c453f14](../../commit/c453f145e593cb16a886e1eee9eaff84676c2c6e))
+- Rename toggle to Full screen, park it bottom-right ([19a0ebf](../../commit/19a0ebf4172262a7bc38384c4200e88845552e2a))
+- Add bulk download for marked PDFs ([8040ff0](../../commit/8040ff087ffcd3a3e057dbe7bcfe389f85dec3e1))
+- Add time to zip filename, auto-dismiss on download ([7429bd7](../../commit/7429bd7b12e4d5915fc8dd199e4963a39451fbe5))
+- Gray out generate-metadata buttons when HF_TOKEN missing ([95200b3](../../commit/95200b394e93525be4d34be1b54acffa3767991b))
+- Warn on library screen when HF token missing ([c990ab7](../../commit/c990ab787ba5e597c658be25b5e4620abb18d29d))
+- Gray out icon-bar buttons without a valid selection ([db50263](../../commit/db50263c05b620cab5a8899b17aee89c33b9d804))
+- Warn when backend host is non-loopback ([c62761c](../../commit/c62761cefbeb79cbce56a59f5345859449402d8c))
+- Rename app identity to Paper Butler ([a6c1617](../../commit/a6c1617410caa367715af2033fc135dfbe71f1b3))
+- Reset selected paper by clicking the top-left logo ([0fb496a](../../commit/0fb496a3a912cfbe5d45f1fa3e3469fa4e5cf695))
+- Ship final logo asset and add spacing under header ([3df5a9a](../../commit/3df5a9a78c37e31879e4fe93f9a666be7f8e58aa))
+
+
 
 ### Bug Fixes
 
@@ -156,27 +221,38 @@ All notable changes to this project are documented in this file.
 - Regenerate changelog instead of prepending ([cd2a060](../../commit/cd2a0606ce62b541a83fb6bd719164b7d3a629b7))
 - Decouple release tag/publish from PR merge ([152e4ca](../../commit/152e4cabb56c90e6c1a99a0d5c1f79b4e857aa68))
 - Extract release notes before tagging ([67f8dbf](../../commit/67f8dbf61307af019e61f5e10b5a56b6c02185ad))
+- Newline changelog before release commit ([b78e183](../../commit/b78e18332dc300c28222cf67311bf01a86f39622))
+- Normalize changelog trailing newline ([48ea562](../../commit/48ea562f868444b0d38d7251b78f6fcfbecdb01d))
+- Strip extra trailing newlines in CHANGELOG ([28abe07](../../commit/28abe07d7df3236312f239619a4ba9ccbf22ece7))
+- Single-source release notes from CHANGELOG ([74bb7a4](../../commit/74bb7a4d54256bf7ac51a069ab13e8b9b982455c))
 
-### Continuous Integration
 
-- Fix uv pip install error by using uv sync ([dc96e24](../../commit/dc96e24bcd67c1896172b0070b42b4c5c9a6829d))
-- Fix testclient error and enforce frozen lockfile ([602bcb1](../../commit/602bcb101a70318fa0563a0fc6ddafccaed8a154))
-- Incorporate ruff and pre-commit ([a906b11](../../commit/a906b110ba192bea2ebf5b389c4c9ea25d518570))
-- Switch to local pre-commit hooks for ruff and unify CI ([8aed11e](../../commit/8aed11e312141e2b4f46a385ff7c682475c32067))
-- Add GitHub Action for Jules automatic code review ([9c52b02](../../commit/9c52b02e83b0447df44bfa3a41be4962816122ee))
-- Replace missing jules-pr-reviewer action with community fork ([1d93924](../../commit/1d939249b272f94992baaf63a8e90c5db44ceeb1))
-- Fix invalid inputs for jules-pr-reviewer action ([058a8c4](../../commit/058a8c4566914c9b82e80e4316df4aed40d6cc0e))
-- Add statuses:write permission for jules-pr-reviewer ([370f65f](../../commit/370f65fd0236a43c612c85b5076da2f9b6f95761))
-- Skip jules review on draft PRs and set success status ([a10162d](../../commit/a10162de15df630c81705a967fa207c875993a66))
-- Downgrade prompt injection findings to warnings ([245e35b](../../commit/245e35bd2d57bde6f941c7f4592b14a2f2690fcd))
-- Update testmon cache keys and remove strict coverage check ([69aa6ce](../../commit/69aa6ce03b37bcc80ad206170a318dbab4685f49))
-- Run pyrefly locally before commit ([ab4ceac](../../commit/ab4ceac14d351ce66e318b1ebe72ed1878d53dda))
-- Add skylos, route checks through poe ([a0f976b](../../commit/a0f976b140e9300a14e98d67757707d50f1fa268))
-- Harden skylos-full step against pipefail ([dd994a9](../../commit/dd994a91a46d56d887807bcb4bf8172699aa384e))
-- Lint commit messages against cliff.toml format ([fa1d733](../../commit/fa1d73362be2531518dfc18cef2ee1ebc323753d))
-- Quote base_ref context expression ([b7010b4](../../commit/b7010b4a06bc754edb7d70203211caf04524a121))
-- Land release commit via PR, not direct push ([c81a826](../../commit/c81a826bcb277c2636a53b9623f68f527be26ba5))
-- Fix release PR permissions and CI-trigger gap ([1d5917d](../../commit/1d5917d5f09e6f3e228eb66217a267e6f4cefaa1))
+
+### Performance
+
+- Batch Drive trash requests when deleting a library ([69946fa](../../commit/69946fab54a2cf397cb5319a6fd18e080606d870))
+- Skip no-op tag writes in bulk tag update ([2272f56](../../commit/2272f56e87f921d7432747ff2da891e95ad7507e))
+- Batch folder creation, parallelize paper uploads ([ee4ac10](../../commit/ee4ac1040c6d82e5eabf2d89a3aae57f4dfc1a0f))
+- Inline cosine similarity calculation and pre-compute query norm ([053fc0e](../../commit/053fc0e1cc38637f6ac8a0593c53336e4e94c773))
+
+
+
+### Refactoring
+
+- Apply typing, docstrings, and Pydantic to drive and main modules ([6e5583a](../../commit/6e5583a430511f1fbbe1c22a88b854d361d72c42))
+- Organize local paper cache by Drive ID ([c3aeace](../../commit/c3aeace34d2ca6299bf174b60b92a613097e6756))
+- Merge duplicate main and add 100% test coverage ([17cad66](../../commit/17cad66f444f1a33b23b19267a7e804897d42abc))
+- Replace upload dialog with inline file uploader ([9c9d9ca](../../commit/9c9d9ca8956f3d721713fe0c553e6c65233486ab))
+- Remove dead code and fix test coverage ([db07495](../../commit/db07495dcda407f577224c8abcd8a99cb6f91629))
+- Consolidate test directories and fix vulture warnings ([4ec12f8](../../commit/4ec12f8171e5d12d5469f8a2f5b8b7b3a6876043))
+- Restructure Google Drive storage to use hierarchical folders and id-mapping ([badb8b1](../../commit/badb8b1c6e05321f03951fea4e6d214ae5614201))
+- Justify typing.Any usage in drive.py ([1a86060](../../commit/1a86060e1db4e00111adc8a22e325b3e3aa19590))
+- Merge generation calls into 1 request ([cb1fefc](../../commit/cb1fefc1f1436ef9ff88da50c5d508d6788af352))
+- Freeze models, add logging, split oversized funcs ([0145d06](../../commit/0145d06567604135b71d0287fa09f6e70473f912))
+- Split app.py into feature modules ([4d39f78](../../commit/4d39f7896ae1810822cdbd75237c6b3303861c1c))
+- Auto-sync annotated PDF uploads on change ([62273e7](../../commit/62273e761bed151132b77bff0d5fd701cdcc86ee))
+
+
 
 ### Documentation
 
@@ -220,66 +296,45 @@ All notable changes to this project are documented in this file.
 - Revert AGENTS.md release-process edit ([96dcb88](../../commit/96dcb888a5c3b71738a393aae9054e374b6fbfd7))
 - Remove release-process notes from AGENTS.md ([ed2f410](../../commit/ed2f4101d7db1b46aca1b02593349416989d6f85))
 
-### Features
 
-- Initialize project structure with FastAPI and Streamlit apps (Task 1) ([153f3be](../../commit/153f3be48eda570f41f8435f78fb08263057c659))
-- Add google drive api dependencies ([cbf9294](../../commit/cbf92940a9d7b4d12b9d424a0f7b6ba495245e9b))
-- Add google drive folder creation logic ([5141de3](../../commit/5141de388b83f95e256ef8ca5a3389248b758a8c))
-- Connect streamlit app to google drive ([ea96cfb](../../commit/ea96cfbdcac606c45444bc22cd290165e8f6223d))
-- Add PDF listing and sync methods ([f457025](../../commit/f457025f8388545d65523fd0d9b9975e8edae3e1))
-- Serve local papers folder statically ([296a8d5](../../commit/296a8d5c7e342144064ad907c2401b7722a421ca))
-- Add split-view PDF viewer and sync logic ([6d89fda](../../commit/6d89fdac4f27d49267959dd623ddcf359c33f98c))
-- Add bulk upload and bulk delete functionality ([4ecbf4b](../../commit/4ecbf4b046f74b67feebd11b1dfd7d8d81e14033))
-- Redesign left pane to classic tick-box layout ([780dc53](../../commit/780dc539f18d0eb8156f3a566608bc9ca06da800))
-- Enable real-time search filtering with st-keyup ([c0050f3](../../commit/c0050f3e7534d542e9fbf0ebcb6932202e46b757))
-- Sort pdfs alphabetically and hide extension ([0dd8218](../../commit/0dd821823d408313ec65e64ee4a404b646af5f54))
-- Add testmon and coverage to test pipeline ([0a09684](../../commit/0a0968496a4ba5ffc58b8eac97505adddab8eaaa))
-- Add vulture workflow for dead code detection ([2ea9b26](../../commit/2ea9b262e8d3dc195f99170b513afb14b635849c))
-- Add pyrefly workflow for static type checking ([c67f75d](../../commit/c67f75dc5b5d610f4fc1af399bb560a58cc5916e))
-- Add PaperMetadata pydantic model ([34e5180](../../commit/34e51807be59a1ecd22547bca631492160747158))
-- Add metadata storage functions ([52a4293](../../commit/52a42930b1ff786266a8fac0001d5545bc998ce6))
-- Sync metadata files on startup ([22a8618](../../commit/22a861840422a7c5a9ef51d5dd202e076acb899b))
-- Add metadata sidebar and edit form ([4b9bac4](../../commit/4b9bac40338d58a4bb8d62aaa228c0a29b81bd9a))
-- Float metadata panel on right side ([fd8869a](../../commit/fd8869ae2b5cf3998d6b3e108ca143adcfd29f60))
-- Native sidebar and metadata left of PDF ([334e174](../../commit/334e174c0df69db4b1d9f86647447ffd54da41e0))
-- Add tags/status to PaperIndexEntry ([79bcd7b](../../commit/79bcd7be9be655efda7897fcfe4c493b7c3da287))
-- Expand sidebar, show library ID ([2034320](../../commit/2034320bdc7b77408b2e1bc852b3b305b92f8907))
-- Collapse upload into a dropdown ([0ce48e5](../../commit/0ce48e5d88b54c5582f18f3341e717c042431895))
-- Icon bar trash and checkboxes ([b3e028d](../../commit/b3e028d629dc2fdb28757face1548a95bb48f7cc))
-- Status/tag filters, status icon ([a61b641](../../commit/a61b6416df969fbe241108fc795100ee21fd4de1))
-- Add Hugging Face metadata generation ([ada2cf1](../../commit/ada2cf1f3397a84199b6f08b10ceb2222fd87f1f))
-- Add generate-metadata tooltip and bulk icon ([2bf0004](../../commit/2bf00041a61aadf14976393a3598cface814ca7c))
-- Reuse existing tags in tag generation ([533d44a](../../commit/533d44ae89c3594030704507e5fbeaeeda027cf3))
-- Warn before overwriting existing metadata ([7442266](../../commit/744226632338a63660e0a4f6050dbfb0279851ee))
-- Strip PDF extraction noise before generation ([6d833cc](../../commit/6d833ccdd05eae2173cf29f80e531376039ce906))
-- Flag papers with similar embeddings persistently ([9e68e65](../../commit/9e68e6525121c37426a27059e2e173c386d6ccde))
-- Add generate-missing-metadata icon ([937a176](../../commit/937a176f9916f12509fba800f2607d9f9eeef5d6))
-- Add progress bar for multi-file paper uploads ([93195b8](../../commit/93195b887033490ca7cacaf7cd7397f78f003435))
-- Persist PDF highlights via re-upload ([ec4bb28](../../commit/ec4bb283ba132de5fdcadffb59b4eaf8fbe3f551))
-- Bundle desktop OAuth client, drop per-user setup ([3510eed](../../commit/3510eed6e8133b4363150b619633841081595326))
-- Auto-persist PDF highlights via embedded pdf.js viewer ([f6169d8](../../commit/f6169d8da85c68b879e0257f4abba9982db1e4a8))
-- Shrink metadata panel width, defer drag-resize ([0c509d2](../../commit/0c509d2d2e72f363347d9b5a499eed60c7d117cf))
-- Add delete library button to library selector ([4424dd6](../../commit/4424dd6d48cb1352978a98a6ae7db5a15e97d8fc))
-- Add Similar filter for duplicate-flagged papers ([cc440d1](../../commit/cc440d17ba64302d40efba546c7ecceab17bf3ab))
-- Apply Forest Library brand theme to Streamlit UI ([d906a96](../../commit/d906a9695e576f5755e5112d8e1614c4113989f8))
-- Wire in draft logo as favicon and sidebar mark ([7212940](../../commit/72129401d276043e41016651372b763d6085b482))
-- Replace emoji title with centered logo lockup ([04a7288](../../commit/04a72883095d5fb7fed93b8bec5cd44814870a0a))
-- List skipped duplicate filenames after upload ([9493a92](../../commit/9493a92fb4791aee1c70378d0072c44791b7f8fd))
-- Add bulk label add/remove to icon bar ([cb1c0ea](../../commit/cb1c0eaceea4c1a9786a594c6445123e1e291a26))
-- Add mark-all checkbox scoped to library filter ([29517b5](../../commit/29517b5581fb75b8cc53ba94902e667114ab2032))
-- Stack sidebar filters, add tag search + clear icon ([8d23260](../../commit/8d23260d58d5777ce22e14de614dd29367ff03c3))
-- Enable fullscreen for embedded PDF.js viewer ([ca6d783](../../commit/ca6d783854a8bfae6df0f3db7e37f2eb7f5798b7))
-- Add expand-to-viewport toggle for PDF viewer ([c453f14](../../commit/c453f145e593cb16a886e1eee9eaff84676c2c6e))
-- Rename toggle to Full screen, park it bottom-right ([19a0ebf](../../commit/19a0ebf4172262a7bc38384c4200e88845552e2a))
-- Add bulk download for marked PDFs ([8040ff0](../../commit/8040ff087ffcd3a3e057dbe7bcfe389f85dec3e1))
-- Add time to zip filename, auto-dismiss on download ([7429bd7](../../commit/7429bd7b12e4d5915fc8dd199e4963a39451fbe5))
-- Gray out generate-metadata buttons when HF_TOKEN missing ([95200b3](../../commit/95200b394e93525be4d34be1b54acffa3767991b))
-- Warn on library screen when HF token missing ([c990ab7](../../commit/c990ab787ba5e597c658be25b5e4620abb18d29d))
-- Gray out icon-bar buttons without a valid selection ([db50263](../../commit/db50263c05b620cab5a8899b17aee89c33b9d804))
-- Warn when backend host is non-loopback ([c62761c](../../commit/c62761cefbeb79cbce56a59f5345859449402d8c))
-- Rename app identity to Paper Butler ([a6c1617](../../commit/a6c1617410caa367715af2033fc135dfbe71f1b3))
-- Reset selected paper by clicking the top-left logo ([0fb496a](../../commit/0fb496a3a912cfbe5d45f1fa3e3469fa4e5cf695))
-- Ship final logo asset and add spacing under header ([3df5a9a](../../commit/3df5a9a78c37e31879e4fe93f9a666be7f8e58aa))
+
+### Testing
+
+- Make backend import path in tests robust ([705eda5](../../commit/705eda554489f73c6f6a2d8e5bab6fd10d293961))
+- Add structured unit tests and mocking for drive integration ([1baf6b5](../../commit/1baf6b5021f5d85c1a54afdccd33043f93e48702))
+- Align tests with AGENTS.md rules ([d2bf6a2](../../commit/d2bf6a2b69f2dc543c76aa7a65db57ee95e1b2f1))
+- Size fake st.columns() to the spec ([a696b69](../../commit/a696b69976620dd5d7a145c903e8bf1eb51b8939))
+- Cover library empty-state vs no-match messages ([f465ee2](../../commit/f465ee2147a4eb5f744abfd6fb45964930025f64))
+- Throwaway workflow to check bot-authored @jules mentions ([8cfa23b](../../commit/8cfa23be09a40ad6651863a2c6afa5f9f947f612))
+- Trigger bot-mention test on push ([9f0bbfa](../../commit/9f0bbfa02ea7c3b20df846dc747c52787cc96f63))
+- Retarget bot-mention test at PR 111 ([a5167e7](../../commit/a5167e7f519576187af932ebffd37fc08ec70acd))
+- Remove throwaway jules bot-mention experiment ([bae2e8b](../../commit/bae2e8bf77114dd0d36320aba5f9ae6b8a3c0cbb))
+- Mock HF_TOKEN in generate-tooltip model-name test ([a36b4ac](../../commit/a36b4ac61b84cd950cbe78e60668c8a8dce86414))
+
+
+
+### Continuous Integration
+
+- Fix uv pip install error by using uv sync ([dc96e24](../../commit/dc96e24bcd67c1896172b0070b42b4c5c9a6829d))
+- Fix testclient error and enforce frozen lockfile ([602bcb1](../../commit/602bcb101a70318fa0563a0fc6ddafccaed8a154))
+- Incorporate ruff and pre-commit ([a906b11](../../commit/a906b110ba192bea2ebf5b389c4c9ea25d518570))
+- Switch to local pre-commit hooks for ruff and unify CI ([8aed11e](../../commit/8aed11e312141e2b4f46a385ff7c682475c32067))
+- Add GitHub Action for Jules automatic code review ([9c52b02](../../commit/9c52b02e83b0447df44bfa3a41be4962816122ee))
+- Replace missing jules-pr-reviewer action with community fork ([1d93924](../../commit/1d939249b272f94992baaf63a8e90c5db44ceeb1))
+- Fix invalid inputs for jules-pr-reviewer action ([058a8c4](../../commit/058a8c4566914c9b82e80e4316df4aed40d6cc0e))
+- Add statuses:write permission for jules-pr-reviewer ([370f65f](../../commit/370f65fd0236a43c612c85b5076da2f9b6f95761))
+- Skip jules review on draft PRs and set success status ([a10162d](../../commit/a10162de15df630c81705a967fa207c875993a66))
+- Downgrade prompt injection findings to warnings ([245e35b](../../commit/245e35bd2d57bde6f941c7f4592b14a2f2690fcd))
+- Update testmon cache keys and remove strict coverage check ([69aa6ce](../../commit/69aa6ce03b37bcc80ad206170a318dbab4685f49))
+- Run pyrefly locally before commit ([ab4ceac](../../commit/ab4ceac14d351ce66e318b1ebe72ed1878d53dda))
+- Add skylos, route checks through poe ([a0f976b](../../commit/a0f976b140e9300a14e98d67757707d50f1fa268))
+- Harden skylos-full step against pipefail ([dd994a9](../../commit/dd994a91a46d56d887807bcb4bf8172699aa384e))
+- Lint commit messages against cliff.toml format ([fa1d733](../../commit/fa1d73362be2531518dfc18cef2ee1ebc323753d))
+- Quote base_ref context expression ([b7010b4](../../commit/b7010b4a06bc754edb7d70203211caf04524a121))
+- Land release commit via PR, not direct push ([c81a826](../../commit/c81a826bcb277c2636a53b9623f68f527be26ba5))
+- Fix release PR permissions and CI-trigger gap ([1d5917d](../../commit/1d5917d5f09e6f3e228eb66217a267e6f4cefaa1))
+
+
 
 ### Miscellaneous Tasks
 
@@ -307,42 +362,9 @@ All notable changes to this project are documented in this file.
 - Seed CHANGELOG.md for git-cliff --prepend ([798300a](../../commit/798300ad6dac2864b457e0544b25d32e6806e7f5))
 - Open solve-issue PRs as drafts ([bcb0e1b](../../commit/bcb0e1b43f571d04270d12341db025910d4afd5a))
 
-### Performance
 
-- Batch Drive trash requests when deleting a library ([69946fa](../../commit/69946fab54a2cf397cb5319a6fd18e080606d870))
-- Skip no-op tag writes in bulk tag update ([2272f56](../../commit/2272f56e87f921d7432747ff2da891e95ad7507e))
-- Batch folder creation, parallelize paper uploads ([ee4ac10](../../commit/ee4ac1040c6d82e5eabf2d89a3aae57f4dfc1a0f))
-- Inline cosine similarity calculation and pre-compute query norm ([053fc0e](../../commit/053fc0e1cc38637f6ac8a0593c53336e4e94c773))
 
-### Refactoring
-
-- Apply typing, docstrings, and Pydantic to drive and main modules ([6e5583a](../../commit/6e5583a430511f1fbbe1c22a88b854d361d72c42))
-- Organize local paper cache by Drive ID ([c3aeace](../../commit/c3aeace34d2ca6299bf174b60b92a613097e6756))
-- Merge duplicate main and add 100% test coverage ([17cad66](../../commit/17cad66f444f1a33b23b19267a7e804897d42abc))
-- Replace upload dialog with inline file uploader ([9c9d9ca](../../commit/9c9d9ca8956f3d721713fe0c553e6c65233486ab))
-- Remove dead code and fix test coverage ([db07495](../../commit/db07495dcda407f577224c8abcd8a99cb6f91629))
-- Consolidate test directories and fix vulture warnings ([4ec12f8](../../commit/4ec12f8171e5d12d5469f8a2f5b8b7b3a6876043))
-- Restructure Google Drive storage to use hierarchical folders and id-mapping ([badb8b1](../../commit/badb8b1c6e05321f03951fea4e6d214ae5614201))
-- Justify typing.Any usage in drive.py ([1a86060](../../commit/1a86060e1db4e00111adc8a22e325b3e3aa19590))
-- Merge generation calls into 1 request ([cb1fefc](../../commit/cb1fefc1f1436ef9ff88da50c5d508d6788af352))
-- Freeze models, add logging, split oversized funcs ([0145d06](../../commit/0145d06567604135b71d0287fa09f6e70473f912))
-- Split app.py into feature modules ([4d39f78](../../commit/4d39f7896ae1810822cdbd75237c6b3303861c1c))
-- Auto-sync annotated PDF uploads on change ([62273e7](../../commit/62273e761bed151132b77bff0d5fd701cdcc86ee))
-
-### Testing
-
-- Make backend import path in tests robust ([705eda5](../../commit/705eda554489f73c6f6a2d8e5bab6fd10d293961))
-- Add structured unit tests and mocking for drive integration ([1baf6b5](../../commit/1baf6b5021f5d85c1a54afdccd33043f93e48702))
-- Align tests with AGENTS.md rules ([d2bf6a2](../../commit/d2bf6a2b69f2dc543c76aa7a65db57ee95e1b2f1))
-- Size fake st.columns() to the spec ([a696b69](../../commit/a696b69976620dd5d7a145c903e8bf1eb51b8939))
-- Cover library empty-state vs no-match messages ([f465ee2](../../commit/f465ee2147a4eb5f744abfd6fb45964930025f64))
-- Throwaway workflow to check bot-authored @jules mentions ([8cfa23b](../../commit/8cfa23be09a40ad6651863a2c6afa5f9f947f612))
-- Trigger bot-mention test on push ([9f0bbfa](../../commit/9f0bbfa02ea7c3b20df846dc747c52787cc96f63))
-- Retarget bot-mention test at PR 111 ([a5167e7](../../commit/a5167e7f519576187af932ebffd37fc08ec70acd))
-- Remove throwaway jules bot-mention experiment ([bae2e8b](../../commit/bae2e8bf77114dd0d36320aba5f9ae6b8a3c0cbb))
-- Mock HF_TOKEN in generate-tooltip model-name test ([a36b4ac](../../commit/a36b4ac61b84cd950cbe78e60668c8a8dce86414))
-
-### Style
+### Other
 
 - Fix end of file in gitignore ([772a9e1](../../commit/772a9e1129c2c04f27703413789381b1d951a82e))
 - Extract upload into modal and permanently display bin icon ([3718326](../../commit/37183267005b4877de1eff0810aa7e4575d51e50))
