@@ -57,6 +57,11 @@ jobs:
           config: cliff.toml
           args: --tag ${{ steps.bump.outputs.tag }} --output CHANGELOG.md
 
+      - name: Ensure changelog ends with a newline
+        run: |
+          [ -n "$(tail -c1 CHANGELOG.md)" ] && echo >> CHANGELOG.md
+          exit 0
+
       - name: Upload changelog artifact (dry run)
         if: ${{ inputs.dry_run }}
         uses: actions/upload-artifact@v4
