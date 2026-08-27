@@ -57,6 +57,11 @@ jobs:
           config: cliff.toml
           args: --tag ${{ steps.bump.outputs.tag }} --output CHANGELOG.md
 
+      - name: Normalize changelog trailing newline
+        run: |
+          printf '%s\n' "$(cat CHANGELOG.md)" > CHANGELOG.md.tmp
+          mv CHANGELOG.md.tmp CHANGELOG.md
+
       - name: Upload changelog artifact (dry run)
         if: ${{ inputs.dry_run }}
         uses: actions/upload-artifact@v4
