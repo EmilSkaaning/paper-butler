@@ -1,6 +1,6 @@
 [project]
 name = "paper-butler"
-version = "0.1.0"
+version = "1.0.0"
 description = "Paper Butler: a front-end for papers backed by Google Drive"
 license = "AGPL-3.0-or-later"
 readme = "README.md"
