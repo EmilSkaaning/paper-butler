@@ -346,5 +346,3 @@ All notable changes to this project are documented in this file.
 
 - Fix end of file in gitignore ([772a9e1](../../commit/772a9e1129c2c04f27703413789381b1d951a82e))
 - Extract upload into modal and permanently display bin icon ([3718326](../../commit/37183267005b4877de1eff0810aa7e4575d51e50))
-
-
