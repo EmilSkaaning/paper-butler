@@ -12,7 +12,7 @@ on:
           - minor
           - major
       dry_run:
-        description: "Generate the changelog and stop, without committing/tagging/publishing"
+        description: "Dry-run: Generate the changelog and stop, without committing/tagging/publishing"
         required: false
         type: boolean
         default: false
@@ -22,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -47,22 +48,14 @@ jobs:
           sed -i "0,/^version = \".*\"/s//version = \"${new_version}\"/" pyproject.toml
           echo "version=${new_version}" >> "$GITHUB_OUTPUT"
           echo "tag=v${new_version}" >> "$GITHUB_OUTPUT"
+          echo "branch=release/v${new_version}" >> "$GITHUB_OUTPUT"
 
       - name: Generate changelog
         uses: orhun/git-cliff-action@v4.8.0
         id: cliff-full
         with:
           config: cliff.toml
-          args: --tag ${{ steps.bump.outputs.tag }} --unreleased --prepend CHANGELOG.md
-
-      - name: Extract release notes for this version
-        uses: orhun/git-cliff-action@v4.8.0
-        id: cliff-latest
-        with:
-          config: cliff.toml
-          args: --tag ${{ steps.bump.outputs.tag }} --unreleased --strip all
-        env:
-          OUTPUT: release-notes.md
+          args: --tag ${{ steps.bump.outputs.tag }} --output CHANGELOG.md
 
       - name: Upload changelog artifact (dry run)
         if: ${{ inputs.dry_run }}
@@ -76,19 +69,27 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "${{ steps.bump.outputs.branch }}"
           git add pyproject.toml CHANGELOG.md
           git commit -m "chore: release ${{ steps.bump.outputs.tag }}"
-          git tag "${{ steps.bump.outputs.tag }}"
 
-      - name: Push commit and tag
+      - name: Push branch
         if: ${{ !inputs.dry_run }}
-        run: git push origin HEAD "${{ steps.bump.outputs.tag }}"
+        run: |
+          git push origin "${{ steps.bump.outputs.branch }}"
 
-      - name: Publish GitHub Release
+      - name: Open PR to land release commit on main
         if: ${{ !inputs.dry_run }}
         env:
-          GH_TOKEN: ${{ github.token }}
+          # The default GITHUB_TOKEN doesn't trigger workflow runs on PRs it
+          # opens, so required status checks on main never fire. RELEASE_PAT
+          # (a PAT or GitHub App token with contents+pull-requests write) must
+          # be added as a repo secret for auto-merge to actually complete.
+          GH_TOKEN: ${{ secrets.RELEASE_PAT || github.token }}
         run: |
-          gh release create "${{ steps.bump.outputs.tag }}" \
-            --title "${{ steps.bump.outputs.tag }}" \
-            --notes-file release-notes.md
+          pr_url=$(gh pr create \
+            --base main \
+            --head "${{ steps.bump.outputs.branch }}" \
+            --title "chore: release ${{ steps.bump.outputs.tag }}" \
+            --body "Automated version bump and changelog for ${{ steps.bump.outputs.tag }}. Merging this PR triggers the Publish Release workflow, which tags the release commit and publishes the GitHub Release.")
+          gh pr merge "$pr_url" --merge --auto
