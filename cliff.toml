@@ -9,11 +9,14 @@ body = """
 {% else %}\
     ## [Unreleased]
 {% endif %}\
-{% for group, commits in commits | group_by(attribute="group") %}
-    ### {{ group | striptags | trim | upper_first }}
-    {% for commit in commits %}
+{% set grouped = commits | group_by(attribute="group") %}
+{% for group_name in ["Features", "Bug Fixes", "Performance", "Refactoring", "Documentation", "Testing", "Continuous Integration", "Miscellaneous Tasks", "Other"] %}
+{% if group_name in grouped %}
+    ### {{ group_name }}
+    {% for commit in grouped[group_name] %}
         - {{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}](../../commit/{{ commit.id }}))\
     {% endfor %}
+{% endif %}
 {% endfor %}\n
 """
 trim = true
@@ -25,6 +28,7 @@ filter_unconventional = true
 split_commits = false
 commit_preprocessors = []
 commit_parsers = [
+    { message = "(?i)^chore:\\s*release", skip = true },
     { message = "(?i)^feat", group = "Features" },
     { message = "(?i)^fix", group = "Bug Fixes" },
     { message = "(?i)^refactor", group = "Refactoring" },
@@ -33,6 +37,7 @@ commit_parsers = [
     { message = "(?i)^test", group = "Testing" },
     { message = "(?i)^ci", group = "Continuous Integration" },
     { message = "(?i)^perf", group = "Performance" },
+    { message = ".*", group = "Other" },
 ]
 protect_breaking_commits = false
 filter_commits = false
