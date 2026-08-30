@@ -1,5 +1,6 @@
 """Pure query/filter helpers over a LibraryIndex, for sidebar display."""
 
+import operator
 import re
 from typing import Iterable, Sequence
 
@@ -66,7 +67,7 @@ def get_duplicate_pids(index: LibraryIndex) -> set[str]:
     # Pre-calculate normalized embeddings to avoid duplicate work in O(N^2) loops
     normalized_embs = []
     for _, emb in valid_papers:
-        norm = sum(x * x for x in emb) ** 0.5
+        norm = sum(map(operator.mul, emb, emb)) ** 0.5
         if norm == 0.0:
             normalized_embs.append(None)
         else:
@@ -83,7 +84,7 @@ def get_duplicate_pids(index: LibraryIndex) -> set[str]:
             if emb2 is None or len(emb1) != len(emb2):
                 continue
 
-            score = sum(x * y for x, y in zip(emb1, emb2))
+            score = sum(map(operator.mul, emb1, emb2))
             if score >= DEFAULT_DUPLICATE_THRESHOLD:
                 result.add(valid_papers[i][0])
                 result.add(valid_papers[j][0])

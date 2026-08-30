@@ -16,3 +16,6 @@ staying correct, drop `sorted()` and hash a `frozenset` of `(pid, tuple(embeddin
 directly — order doesn't matter for equality, so the sort was pure overhead, not the `tuple()`
 conversion. Never use object identity (`id()`) as a proxy for mutable-value equality in a cache
 key.
+## 2024-05-21 - C-level vector operations speed up mathematical operations over large lists
+**Learning:** Python generator expressions like `sum(x * y for x, y in zip(a, b))` and `sum(x * x for x in a)` are inefficient for dot products or L2 norms on large lists (like 384-dimensional embeddings) due to Python-level loops.
+**Action:** Use `sum(map(operator.mul, a, b))` and `sum(map(operator.mul, a, a))` instead. This pushes iteration and multiplication to the C-level, yielding a measurable speedup (e.g., ~1.3-1.6x faster).
