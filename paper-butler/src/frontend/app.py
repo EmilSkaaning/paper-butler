@@ -662,39 +662,37 @@ def main() -> None:
                 if st.button(
                     "✨",
                     key="bulk_generate_icon",
-                    disabled=not hf_token_configured,
+                    disabled=not hf_token_configured or not checked_pids,
                     help=(
-                        GENERATE_METADATA_HELP
-                        if hf_token_configured
-                        else HF_TOKEN_MISSING_HELP
+                        HF_TOKEN_MISSING_HELP
+                        if not hf_token_configured
+                        else (
+                            "Select papers to generate metadata"
+                            if not checked_pids
+                            else GENERATE_METADATA_HELP
+                        )
                     ),
                     type="secondary",
                 ):
-                    if checked_pids:
-                        _stage_bulk_action("confirm_generate_pids", checked_pids)
-                    else:
-                        _clear_bulk_actions()
-                        icon_bar_message = ("warning", "No papers selected.")
+                    _stage_bulk_action("confirm_generate_pids", checked_pids)
             with icon_col3:
+                missing_pids = list(get_missing_metadata_pids(st.session_state.index))
                 if st.button(
                     "🪄",
                     key="generate_missing_icon",
-                    disabled=not hf_token_configured,
+                    disabled=not hf_token_configured or not missing_pids,
                     help=(
-                        "Generate metadata for every paper that doesn't have any yet"
-                        if hf_token_configured
-                        else HF_TOKEN_MISSING_HELP
+                        HF_TOKEN_MISSING_HELP
+                        if not hf_token_configured
+                        else (
+                            "Every paper already has metadata"
+                            if not missing_pids
+                            else "Generate metadata for every paper that doesn't have any yet"
+                        )
                     ),
                     type="secondary",
                 ):
-                    missing_pids = list(
-                        get_missing_metadata_pids(st.session_state.index)
-                    )
-                    if missing_pids:
-                        _stage_bulk_action("confirm_generate_pids", missing_pids)
-                    else:
-                        _clear_bulk_actions()
-                        icon_bar_message = ("info", "Every paper already has metadata.")
+                    _stage_bulk_action("confirm_generate_pids", missing_pids)
             with icon_col4:
                 if st.button(
                     "🏷️",
@@ -1174,9 +1172,13 @@ def main() -> None:
                 key=f"generate_btn_{pid}",
                 disabled=not pdf_available or not hf_token_configured,
                 help=(
-                    GENERATE_METADATA_HELP
-                    if hf_token_configured
-                    else HF_TOKEN_MISSING_HELP
+                    "PDF not available"
+                    if not pdf_available
+                    else (
+                        HF_TOKEN_MISSING_HELP
+                        if not hf_token_configured
+                        else GENERATE_METADATA_HELP
+                    )
                 ),
             ):
                 has_unsaved_edits = (
