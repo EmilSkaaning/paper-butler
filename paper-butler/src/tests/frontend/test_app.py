@@ -26,9 +26,11 @@ from backend.huggingface_client import GeneratedMetadata
 from backend.models import LibraryIndex, PaperIndexEntry, PaperMetadata
 from frontend.constants import (
     GENERATE_METADATA_HELP,
+    GENERATE_MISSING_METADATA_HELP,
     HF_TOKEN_MISSING_HELP,
     MAX_DUPLICATE_NAMES_TO_LIST,
     PDF_FILENAME,
+    PDF_UNAVAILABLE_HELP,
 )
 from tests.frontend.conftest import make_uploaded_file
 
@@ -4712,10 +4714,7 @@ class TestMainBulkGenerateFlow:
             if c.kwargs.get("key") == "generate_missing_icon"
         )
         assert missing_call.kwargs.get("disabled") is False
-        assert (
-            missing_call.kwargs.get("help")
-            == "Generate metadata for every paper that doesn't have any yet"
-        )
+        assert missing_call.kwargs.get("help") == GENERATE_MISSING_METADATA_HELP
 
     def test_icon_bar_columns_use_no_gap(
         self, fake_st: MagicMock, mocker: MockerFixture
@@ -5626,6 +5625,55 @@ class TestMainMetadataView:
         )
         assert generate_call.kwargs.get("disabled") is False
         assert generate_call.kwargs.get("help") == GENERATE_METADATA_HELP
+
+    def test_generate_button_help_prefers_hf_token_over_missing_pdf(
+        self, fake_st: MagicMock, mocker: MockerFixture, tmp_path: Path
+    ) -> None:
+        """Test a missing HF_TOKEN outranks a missing PDF in the per-paper
+        generate tooltip, so the icon-bar buttons and this button always
+        name the same blocker first when both apply."""
+        pid = "a" * 32
+        _select_paper(fake_st, mocker, tmp_path, pid)
+        mocker.patch.object(
+            app, "download_file", side_effect=RuntimeError("network blip")
+        )
+        mocker.patch.object(app, "sync_paper_metadata", return_value=True)
+        mocker.patch.dict("os.environ", {}, clear=True)
+        fake_st.form_submit_button.return_value = False
+
+        app.main()
+
+        generate_call = next(
+            c
+            for c in fake_st.button.call_args_list
+            if c.kwargs.get("key") == f"generate_btn_{pid}"
+        )
+        assert generate_call.kwargs.get("disabled") is True
+        assert generate_call.kwargs.get("help") == HF_TOKEN_MISSING_HELP
+
+    def test_generate_button_help_reports_missing_pdf_when_token_is_set(
+        self, fake_st: MagicMock, mocker: MockerFixture, tmp_path: Path
+    ) -> None:
+        """Test the per-paper generate button explains an unavailable PDF
+        once the HF_TOKEN blocker is out of the way."""
+        pid = "a" * 32
+        _select_paper(fake_st, mocker, tmp_path, pid)
+        mocker.patch.object(
+            app, "download_file", side_effect=RuntimeError("network blip")
+        )
+        mocker.patch.object(app, "sync_paper_metadata", return_value=True)
+        mocker.patch.dict("os.environ", {"HF_TOKEN": "some-token"}, clear=True)
+        fake_st.form_submit_button.return_value = False
+
+        app.main()
+
+        generate_call = next(
+            c
+            for c in fake_st.button.call_args_list
+            if c.kwargs.get("key") == f"generate_btn_{pid}"
+        )
+        assert generate_call.kwargs.get("disabled") is True
+        assert generate_call.kwargs.get("help") == PDF_UNAVAILABLE_HELP
 
     def test_recovers_valid_fields_after_validation_error(
         self, fake_st: MagicMock, mocker: MockerFixture, tmp_path: Path

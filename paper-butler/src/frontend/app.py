@@ -35,6 +35,7 @@ from frontend.constants import (  # noqa: E402
     DEFAULT_FASTAPI_URL,
     EDITED_PDF_FILENAME,
     GENERATE_METADATA_HELP,
+    GENERATE_MISSING_METADATA_HELP,
     HF_TOKEN_MISSING_HELP,
     JSON_MIME_TYPE,
     LABEL_TO_STATUS,
@@ -42,6 +43,7 @@ from frontend.constants import (  # noqa: E402
     META_FILENAME,
     PAPER_ID_PATTERN,
     PDF_FILENAME,
+    PDF_UNAVAILABLE_HELP,
     SIMILAR_FILTER_LABEL,
     STATUS_ICONS,
     STATUS_LABELS,
@@ -642,10 +644,6 @@ def main() -> None:
                 icon_col7,
                 _icon_spacer,
             ) = st.columns([1, 1, 1, 1, 1, 1, 1, 4], gap=None)
-            # Rendered outside the columns below so a wide message box never
-            # stretches the auto-width icon columns and shoves the later
-            # icons out of place.
-            icon_bar_message: tuple[str, str] | None = None
             with icon_col1:
                 if st.button(
                     "🗑️",
@@ -687,7 +685,7 @@ def main() -> None:
                         else (
                             "Every paper already has metadata"
                             if not missing_pids
-                            else "Generate metadata for every paper that doesn't have any yet"
+                            else GENERATE_MISSING_METADATA_HELP
                         )
                     ),
                     type="secondary",
@@ -738,13 +736,6 @@ def main() -> None:
                     disabled=not filters_active,
                     on_click=clear_filters,
                 )
-
-            if icon_bar_message is not None:
-                message_kind, message_text = icon_bar_message
-                if message_kind == "warning":
-                    st.warning(message_text)
-                else:
-                    st.info(message_text)
 
             # Always declare this container, even when no action is staged,
             # so the number of elements preceding the search box never
@@ -1172,11 +1163,11 @@ def main() -> None:
                 key=f"generate_btn_{pid}",
                 disabled=not pdf_available or not hf_token_configured,
                 help=(
-                    "PDF not available"
-                    if not pdf_available
+                    HF_TOKEN_MISSING_HELP
+                    if not hf_token_configured
                     else (
-                        HF_TOKEN_MISSING_HELP
-                        if not hf_token_configured
+                        PDF_UNAVAILABLE_HELP
+                        if not pdf_available
                         else GENERATE_METADATA_HELP
                     )
                 ),
