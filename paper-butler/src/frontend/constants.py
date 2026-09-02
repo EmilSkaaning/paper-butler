@@ -10,10 +10,19 @@ GENERATE_METADATA_HELP = (
     f"and a similarity-detection embedding with {DEFAULT_EMBEDDING_MODEL}."
 )
 
+GENERATE_MISSING_METADATA_HELP = (
+    "Generate metadata for every paper that doesn't have any yet"
+)
+
 HF_TOKEN_MISSING_HELP = (
     "Requires a Hugging Face API token. Set the HF_TOKEN environment "
     "variable and restart the app to enable AI metadata generation."
 )
+
+# Shown on a disabled per-paper generate button once HF_TOKEN is set but the
+# paper's PDF could not be fetched - HF_TOKEN_MISSING_HELP takes precedence
+# when both apply, so every generate button names the same blocker first.
+PDF_UNAVAILABLE_HELP = "PDF not available"
 
 BULK_GENERATE_DELAY_SECONDS: float = 1.5
 

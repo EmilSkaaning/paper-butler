@@ -26,9 +26,11 @@ from backend.huggingface_client import GeneratedMetadata
 from backend.models import LibraryIndex, PaperIndexEntry, PaperMetadata
 from frontend.constants import (
     GENERATE_METADATA_HELP,
+    GENERATE_MISSING_METADATA_HELP,
     HF_TOKEN_MISSING_HELP,
     MAX_DUPLICATE_NAMES_TO_LIST,
     PDF_FILENAME,
+    PDF_UNAVAILABLE_HELP,
 )
 from tests.frontend.conftest import make_uploaded_file
 
@@ -4614,10 +4616,10 @@ class TestGenerateMetadataForSelected:
 class TestMainBulkGenerateFlow:
     """Test suite for main()'s sidebar icon-bar bulk generate flow."""
 
-    def test_bulk_generate_with_no_checked_papers_warns(
+    def test_bulk_generate_with_no_checked_papers_is_disabled(
         self, fake_st: MagicMock, mocker: MockerFixture
     ) -> None:
-        """Test clicking the bulk generate icon with nothing checked just warns."""
+        """Test the bulk generate icon is disabled when no papers are checked."""
         pid = "a" * 32
         entry = PaperIndexEntry(
             title="Some Paper", pdf_file_id="pdf1", meta_file_id="meta1", folder_id="f1"
@@ -4629,15 +4631,12 @@ class TestMainBulkGenerateFlow:
         fake_st.session_state.selected_paper = None
         fake_st.file_uploader.return_value = None
         fake_st.checkbox.return_value = False
-        fake_st.button.side_effect = lambda label, **kw: (
-            kw.get("key") == "bulk_generate_icon"
-        )
         mocker.patch.object(app, "st_keyup", return_value="")
         mocker.patch.object(app, "authenticate_user", return_value=MagicMock())
+        mocker.patch.dict("os.environ", {"HF_TOKEN": "some-token"}, clear=True)
 
         app.main()
 
-        fake_st.warning.assert_any_call("No papers selected.")
         assert "confirm_generate_pids" not in fake_st.session_state
 
         generate_call = next(
@@ -4645,7 +4644,8 @@ class TestMainBulkGenerateFlow:
             for c in fake_st.button.call_args_list
             if c.kwargs.get("key") == "bulk_generate_icon"
         )
-        assert generate_call.kwargs.get("type") == "secondary"
+        assert generate_call.kwargs.get("disabled") is True
+        assert generate_call.kwargs.get("help") == "Select papers to generate metadata"
 
     def test_bulk_generate_icon_stays_secondary_when_a_paper_is_checked(
         self, fake_st: MagicMock, mocker: MockerFixture
@@ -4711,7 +4711,7 @@ class TestMainBulkGenerateFlow:
         self, fake_st: MagicMock, mocker: MockerFixture
     ) -> None:
         """Test the bulk and missing-metadata generate icons stay enabled
-        with their original help text when HF_TOKEN is set."""
+        with their original help text when HF_TOKEN is set and papers exist/selected."""
         pid = "a" * 32
         entry = PaperIndexEntry(
             title="Some Paper", pdf_file_id="pdf1", meta_file_id="meta1", folder_id="f1"
@@ -4722,7 +4722,8 @@ class TestMainBulkGenerateFlow:
         fake_st.session_state.index = LibraryIndex(papers={pid: entry})
         fake_st.session_state.selected_paper = None
         fake_st.file_uploader.return_value = None
-        fake_st.checkbox.return_value = False
+        # Checkbox return True so the button gets enabled
+        fake_st.session_state[f"chk_{pid}"] = True
         fake_st.button.return_value = False
         mocker.patch.object(app, "st_keyup", return_value="")
         mocker.patch.object(app, "authenticate_user", return_value=MagicMock())
@@ -4744,10 +4745,7 @@ class TestMainBulkGenerateFlow:
             if c.kwargs.get("key") == "generate_missing_icon"
         )
         assert missing_call.kwargs.get("disabled") is False
-        assert (
-            missing_call.kwargs.get("help")
-            == "Generate metadata for every paper that doesn't have any yet"
-        )
+        assert missing_call.kwargs.get("help") == GENERATE_MISSING_METADATA_HELP
 
     def test_icon_bar_columns_use_no_gap(
         self, fake_st: MagicMock, mocker: MockerFixture
@@ -4954,11 +4952,10 @@ class TestMainBulkGenerateFlow:
         assert fake_st.session_state.confirm_generate_pids == [pid_missing]
         mock_generate.assert_not_called()
 
-    def test_generate_missing_icon_with_none_missing_shows_info(
+    def test_generate_missing_icon_with_none_missing_is_disabled(
         self, fake_st: MagicMock, mocker: MockerFixture
     ) -> None:
-        """Test clicking the wizard icon when every paper already has
-        metadata shows an info message instead of staging a confirmation."""
+        """Test the wizard icon is disabled when every paper already has metadata."""
         pid = "a" * 32
         entry = PaperIndexEntry(
             title="Has Tags",
@@ -4973,19 +4970,21 @@ class TestMainBulkGenerateFlow:
         fake_st.session_state.index = LibraryIndex(papers={pid: entry})
         fake_st.session_state.selected_paper = None
         fake_st.file_uploader.return_value = None
-        fake_st.button.side_effect = lambda label, **kw: (
-            kw.get("key") == "generate_missing_icon"
-        )
         mocker.patch.object(app, "st_keyup", return_value="")
         mocker.patch.object(app, "authenticate_user", return_value=MagicMock())
+        mocker.patch.dict("os.environ", {"HF_TOKEN": "some-token"}, clear=True)
 
         app.main()
 
         assert "confirm_generate_pids" not in fake_st.session_state
-        assert any(
-            "already has metadata" in str(call.args)
-            for call in fake_st.info.call_args_list
+
+        generate_call = next(
+            c
+            for c in fake_st.button.call_args_list
+            if c.kwargs.get("key") == "generate_missing_icon"
         )
+        assert generate_call.kwargs.get("disabled") is True
+        assert generate_call.kwargs.get("help") == "Every paper already has metadata"
 
     def test_generate_missing_icon_uses_secondary_type(
         self, fake_st: MagicMock, mocker: MockerFixture
@@ -5014,55 +5013,6 @@ class TestMainBulkGenerateFlow:
             if c.kwargs.get("key") == "generate_missing_icon"
         )
         assert generate_missing_call.kwargs.get("type") == "secondary"
-
-    def test_generate_missing_info_shares_position_with_other_icon_messages(
-        self, fake_st: MagicMock, mocker: MockerFixture
-    ) -> None:
-        """Test the wand icon's "already has metadata" info box renders at
-        the same call position (immediately after all six icon buttons)
-        as the trash icon's "No papers selected." warning, instead of being
-        nested inside its own icon column - a stray per-column message
-        would stretch just that column's auto width and shove the icons
-        after it out of place (issue #99)."""
-        pid = "a" * 32
-        entry = PaperIndexEntry(
-            title="Has Tags",
-            pdf_file_id="pdf1",
-            meta_file_id="meta1",
-            folder_id="f1",
-            tags=["nlp"],
-        )
-        fake_st.session_state.current_lib_id = "lib_123"
-        fake_st.session_state.current_papers_id = "papers_123"
-        fake_st.session_state.root_id = "root_123"
-        fake_st.session_state.index = LibraryIndex(papers={pid: entry})
-        fake_st.session_state.selected_paper = None
-        fake_st.file_uploader.return_value = None
-        fake_st.button.side_effect = lambda label, **kw: (
-            kw.get("key") == "generate_missing_icon"
-        )
-        mocker.patch.object(app, "st_keyup", return_value="")
-        mocker.patch.object(app, "authenticate_user", return_value=MagicMock())
-
-        app.main()
-
-        button_names = [
-            c[0] for c in fake_st.mock_calls if c[0] in ("button", "info", "warning")
-        ]
-        clear_filters_index = next(
-            i
-            for i, c in enumerate(fake_st.mock_calls)
-            if c[0] == "button" and c.kwargs.get("key") == "clear_filters_icon"
-        )
-        info_index = next(
-            i
-            for i, c in enumerate(fake_st.mock_calls)
-            if c[0] == "info" and "already has metadata" in str(c.args)
-        )
-        assert info_index == clear_filters_index + 1, (
-            f"expected the info box to render immediately after the last "
-            f"icon button, got call order {button_names}"
-        )
 
     def test_confirming_bulk_generate_calls_generate_and_reruns(
         self,
@@ -5706,6 +5656,55 @@ class TestMainMetadataView:
         )
         assert generate_call.kwargs.get("disabled") is False
         assert generate_call.kwargs.get("help") == GENERATE_METADATA_HELP
+
+    def test_generate_button_help_prefers_hf_token_over_missing_pdf(
+        self, fake_st: MagicMock, mocker: MockerFixture, tmp_path: Path
+    ) -> None:
+        """Test a missing HF_TOKEN outranks a missing PDF in the per-paper
+        generate tooltip, so the icon-bar buttons and this button always
+        name the same blocker first when both apply."""
+        pid = "a" * 32
+        _select_paper(fake_st, mocker, tmp_path, pid)
+        mocker.patch.object(
+            app, "download_file", side_effect=RuntimeError("network blip")
+        )
+        mocker.patch.object(app, "sync_paper_metadata", return_value=True)
+        mocker.patch.dict("os.environ", {}, clear=True)
+        fake_st.form_submit_button.return_value = False
+
+        app.main()
+
+        generate_call = next(
+            c
+            for c in fake_st.button.call_args_list
+            if c.kwargs.get("key") == f"generate_btn_{pid}"
+        )
+        assert generate_call.kwargs.get("disabled") is True
+        assert generate_call.kwargs.get("help") == HF_TOKEN_MISSING_HELP
+
+    def test_generate_button_help_reports_missing_pdf_when_token_is_set(
+        self, fake_st: MagicMock, mocker: MockerFixture, tmp_path: Path
+    ) -> None:
+        """Test the per-paper generate button explains an unavailable PDF
+        once the HF_TOKEN blocker is out of the way."""
+        pid = "a" * 32
+        _select_paper(fake_st, mocker, tmp_path, pid)
+        mocker.patch.object(
+            app, "download_file", side_effect=RuntimeError("network blip")
+        )
+        mocker.patch.object(app, "sync_paper_metadata", return_value=True)
+        mocker.patch.dict("os.environ", {"HF_TOKEN": "some-token"}, clear=True)
+        fake_st.form_submit_button.return_value = False
+
+        app.main()
+
+        generate_call = next(
+            c
+            for c in fake_st.button.call_args_list
+            if c.kwargs.get("key") == f"generate_btn_{pid}"
+        )
+        assert generate_call.kwargs.get("disabled") is True
+        assert generate_call.kwargs.get("help") == PDF_UNAVAILABLE_HELP
 
     def test_recovers_valid_fields_after_validation_error(
         self, fake_st: MagicMock, mocker: MockerFixture, tmp_path: Path
