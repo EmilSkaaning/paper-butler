@@ -1,6 +1,7 @@
 """Hugging Face Inference Providers client for on-demand paper metadata generation."""
 
 import json
+import math
 import os
 import re
 import time
@@ -417,10 +418,10 @@ def cosine_similarity(
         raise ValueError("vectors must be the same length")
     if not a or not b:
         return 0.0
-    dot = sum(x * y for x, y in zip(a, b))
+    dot = math.sumprod(a, b)
     if norm_a is None:
-        norm_a = sum(x * x for x in a) ** 0.5
-    norm_b = sum(y * y for y in b) ** 0.5
+        norm_a = math.hypot(*a)
+    norm_b = math.hypot(*b)
     if norm_a == 0.0 or norm_b == 0.0:
         return 0.0
     return dot / (norm_a * norm_b)
@@ -454,7 +455,7 @@ def find_similar_papers(
     """
     # Pre-calculate the query embedding's norm once so cosine_similarity()
     # doesn't recompute it for every paper in the library.
-    norm_query = sum(x * x for x in embedding) ** 0.5 if embedding else 0.0
+    norm_query = math.hypot(*embedding) if embedding else 0.0
     if norm_query == 0.0 and threshold > 0.0:
         return []
 
