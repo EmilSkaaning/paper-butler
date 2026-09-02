@@ -201,7 +201,7 @@ comprehensive summary → include a test plan → push with the `-u` flag.
 
 | Rule | Reason |
 |------|--------|
-| Never exceed 50 chars in subject | Git truncates it in logs and UIs |
+| Keep the subject under 50 chars | Git truncates it in logs and UIs (CI hard-fails above 75) |
 | Never use generic messages | "update code", "fix bug", "changes", "wip", "misc" tell reviewers nothing |
 | Never commit unrelated files together | One logical change per commit keeps history bisectable |
 | Never skip quality checks | Broken commits block the team and CI |

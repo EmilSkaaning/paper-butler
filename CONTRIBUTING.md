@@ -104,8 +104,9 @@ conventions. In short:
    git checkout -b {type}/{n}-{slug} origin/main
    ```
 2. **Commit messages**: `<type>: <short description>`, imperative mood, lowercase, under 50
-   characters in the subject. Types: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `ci`,
-   `perf`. See [AGENTS.md §8](AGENTS.md#8-commit-message-rules--examples) for the full rules and
+   characters in the subject (the `commit-msg` hook and CI hard-fail above 75). Types:
+   `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `ci`, `perf`. See
+   [AGENTS.md §8](AGENTS.md#8-commit-message-rules--examples) for the full rules and
    examples of good vs. bad messages.
 3. **Quality gates**: run `uv run poe check` (ruff format/lint, pyrefly, vulture, skylos) and
    `uv run poe test` before opening a PR. Broken checks block review.
