@@ -13,7 +13,7 @@ import subprocess
 import sys
 
 COMMIT_TYPES = {"feat", "fix", "refactor", "chore", "docs", "test", "ci", "perf"}
-MAX_SUBJECT_LENGTH = 50
+MAX_SUBJECT_LENGTH = 75
 SKIP_PREFIXES = ("Merge ", "Revert ", "fixup!", "squash!")
 
 _SUBJECT_PATTERN = re.compile(

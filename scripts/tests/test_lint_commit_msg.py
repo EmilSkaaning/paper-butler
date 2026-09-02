@@ -69,7 +69,21 @@ class TestValidateSubject:
         # Assert
         assert error is not None
 
-    def test_rejects_subject_over_fifty_chars(self) -> None:
+    def test_rejects_subject_over_seventy_five_chars(self) -> None:
+        # Arrange
+        subject = (
+            "feat: implement the new de novo alphafold model weight "
+            "enumeration subsystem"
+        )
+
+        # Act
+        error = validate_subject(subject)
+
+        # Assert
+        assert error is not None
+        assert "75" in error
+
+    def test_accepts_subject_between_fifty_and_seventy_five_chars(self) -> None:
         # Arrange
         subject = "feat: implement the new de novo alphafold weight enumeration"
 
@@ -77,8 +91,8 @@ class TestValidateSubject:
         error = validate_subject(subject)
 
         # Assert
-        assert error is not None
-        assert "50" in error
+        assert 50 < len(subject) <= 75
+        assert error is None
 
     def test_rejects_trailing_period(self) -> None:
         # Arrange / Act
