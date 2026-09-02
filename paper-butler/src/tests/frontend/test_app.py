@@ -2055,6 +2055,37 @@ class TestGetDuplicatePids:
         )
         assert app.get_duplicate_pids(index) == {pid1, pid2}
 
+    def test_large_magnitude_embeddings_are_flagged(self) -> None:
+        """Test two identical embeddings whose squared magnitudes overflow
+        float are still flagged as duplicates.
+
+        `sum(x * x for x in emb) ** 0.5` overflows to `inf` for entries this
+        large, which silently normalized every component to 0.0 and scored
+        the pair at 0.0. Computing the norm with `math.hypot` keeps it
+        finite, so the pair scores 1.0 as it should.
+        """
+        pid1, pid2 = "a" * 32, "b" * 32
+        embedding = [1e200, 1e200, 1e200]
+        index = LibraryIndex(
+            papers={
+                pid1: PaperIndexEntry(
+                    title="One",
+                    pdf_file_id="p1",
+                    meta_file_id="m1",
+                    folder_id="f1",
+                    embedding=list(embedding),
+                ),
+                pid2: PaperIndexEntry(
+                    title="Two",
+                    pdf_file_id="p2",
+                    meta_file_id="m2",
+                    folder_id="f2",
+                    embedding=list(embedding),
+                ),
+            }
+        )
+        assert app.get_duplicate_pids(index) == {pid1, pid2}
+
     def test_paper_with_no_embedding_is_excluded(self) -> None:
         """Test a paper with an empty embedding is never flagged, even if
         another paper's embedding happens to be empty too."""

@@ -16,6 +16,18 @@ staying correct, drop `sorted()` and hash a `frozenset` of `(pid, tuple(embeddin
 directly — order doesn't matter for equality, so the sort was pure overhead, not the `tuple()`
 conversion. Never use object identity (`id()`) as a proxy for mutable-value equality in a cache
 key.
-## 2024-05-21 - C-level vector operations speed up mathematical operations over large lists
-**Learning:** Python generator expressions like `sum(x * y for x, y in zip(a, b))` and `sum(x * x for x in a)` are inefficient for dot products or L2 norms on large lists (like 384-dimensional embeddings) due to Python-level loops.
-**Action:** Use `sum(map(operator.mul, a, b))` and `sum(map(operator.mul, a, a))` instead. This pushes iteration and multiplication to the C-level, yielding a measurable speedup (e.g., ~1.3-1.6x faster).
+## 2026-09-02 - Use the stdlib `math` vector primitives, not hand-rolled C-level tricks
+**Learning:** Python generator expressions like `sum(x * y for x, y in zip(a, b))` and
+`sum(x * x for x in a) ** 0.5` are slow for dot products and L2 norms on 384-dimensional
+embeddings because iteration happens at the Python level. `sum(map(operator.mul, ...))` is a
+partial fix (~1.9x) but was superseded: `math.sumprod` and `math.hypot` (both stdlib, and
+`sumprod` needs 3.12 — which this repo already requires) are single C calls with no intermediate
+iterator, and they accumulate in extended precision. Measured on 384-dim float lists: dot product
+12.96 us (genexp) -> 6.78 us (`map`/`operator.mul`) -> 2.06 us (`math.sumprod`); norm 3.65 us
+(`sum(map(...)) ** 0.5`) -> 1.01 us (`math.hypot`). `math.hypot` also fixes a real correctness bug:
+`sum(x * x for x in emb) ** 0.5` overflows to `inf` for large-magnitude embeddings, which silently
+normalized every component to 0.0 and made `get_duplicate_pids` score identical papers at 0.0.
+**Action:** Reach for the stdlib primitive before hand-rolling a faster loop — `math.sumprod(a, b)`
+for dot products, `math.hypot(*a)` for L2 norms. Check whether `math` already has the operation
+before optimizing the Python-level expression; the stdlib version is usually faster *and* more
+numerically robust.
