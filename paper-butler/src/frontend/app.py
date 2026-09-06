@@ -379,8 +379,21 @@ def main() -> None:
                 st.info("No existing libraries found.")
 
         with col2:
-            new_lib_name = st.text_input("New Library Name")
-            if st.button("Create Library") and new_lib_name:
+            new_lib_name = st.text_input(
+                "New Library Name",
+                placeholder="New Library Name...",
+                label_visibility="collapsed",
+            )
+            if (
+                st.button(
+                    "Create Library",
+                    disabled=not new_lib_name.strip(),
+                    help="Enter a name to create a new library"
+                    if not new_lib_name.strip()
+                    else "Create this library",
+                )
+                and new_lib_name
+            ):
                 lib_info = create_library(creds, root_id, new_lib_name)
                 init_library_state(
                     creds,
@@ -796,11 +809,20 @@ def main() -> None:
                     pids_to_tag = st.session_state.show_add_tag_pids
                     new_tags_str = st.text_input(
                         f"Add tag(s) to {len(pids_to_tag)} paper(s), comma separated",
+                        placeholder="Add tag(s) (comma separated)...",
+                        label_visibility="collapsed",
                         key="add_tag_input",
                     )
                     add_tag_col, cancel_add_tag_col = st.columns(2)
                     with add_tag_col:
-                        if st.button("Add", key="confirm_add_tag_btn"):
+                        if st.button(
+                            "Add",
+                            key="confirm_add_tag_btn",
+                            disabled=not new_tags_str.strip(),
+                            help="Enter at least one tag to add"
+                            if not new_tags_str.strip()
+                            else "Add these tags to the selected papers",
+                        ):
                             new_tags = [
                                 t.strip() for t in new_tags_str.split(",") if t.strip()
                             ]
@@ -839,11 +861,20 @@ def main() -> None:
                         tags_to_remove = st.multiselect(
                             f"Remove tag(s) from {len(pids_to_untag)} paper(s)",
                             options=tags_in_selection,
+                            placeholder="Select tags to remove...",
+                            label_visibility="collapsed",
                             key="remove_tag_select",
                         )
                         remove_tag_col, cancel_remove_tag_col = st.columns(2)
                         with remove_tag_col:
-                            if st.button("Remove", key="confirm_remove_tag_btn"):
+                            if st.button(
+                                "Remove",
+                                key="confirm_remove_tag_btn",
+                                disabled=not tags_to_remove,
+                                help="Select at least one tag to remove"
+                                if not tags_to_remove
+                                else "Remove these tags from the selected papers",
+                            ):
                                 remove_succeeded = True
                                 if tags_to_remove:
                                     remove_succeeded = remove_tags_from_selected(
