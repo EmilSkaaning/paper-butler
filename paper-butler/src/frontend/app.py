@@ -977,7 +977,7 @@ def main() -> None:
                     row_check, row_button = st.columns([1, 8])
                     with row_check:
                         st.checkbox(
-                            f"Select {p.title}",
+                            "Select",
                             key=f"chk_{pid}",
                             label_visibility="collapsed",
                             on_change=_uncheck_mark_all_if_unmarked,
