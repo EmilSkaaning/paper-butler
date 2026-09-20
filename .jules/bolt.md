@@ -31,3 +31,6 @@ normalized every component to 0.0 and made `get_duplicate_pids` score identical 
 for dot products, `math.hypot(*a)` for L2 norms. Check whether `math` already has the operation
 before optimizing the Python-level expression; the stdlib version is usually faster *and* more
 numerically robust.
+## 2024-05-21 - Optimize library filters loop
+**Learning:** Due to Streamlit's heavy rerun execution model, performance-critical loops like `filter_papers` (which gets called very frequently on any sidebar interaction) are susceptible to overhead from inline list checks and regex parsing. Repeatedly calling `re.match` with a string pattern forces the regex engine to verify its internal cache on every loop iteration, which adds up. Using generator expressions like `any(...)` inside inner loops is also slower than using C-optimized set operations like `set.isdisjoint`.
+**Action:** When filtering over a large collection repeatedly, pre-compile regular expressions (`re.compile`) and convert list-based filters to `set`s outside the loop to minimize lookup and compilation overhead. Use `set.isdisjoint` instead of list iteration/generator comprehensions when checking if a document's tags intersect with the active tag filter.
