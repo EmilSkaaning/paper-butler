@@ -145,18 +145,22 @@ def filter_papers(
         (e.g. a legacy/malformed index entry) are always skipped.
     """
     duplicate_pid_set = set(duplicate_pids)
+    status_set = set(status_filter) if status_filter else None
+    tags_set = set(tags_filter) if tags_filter else None
+    compiled_pattern = re.compile(PAPER_ID_PATTERN)
+
     matches: list[tuple[str, PaperIndexEntry]] = []
     for pid, p in papers.items():
-        if not re.match(PAPER_ID_PATTERN, pid):
+        if not compiled_pattern.match(pid):
             continue
         if search_query not in p.title.lower():
             continue
-        if status_filter or include_similar:
-            status_matches = p.status in status_filter
+        if status_set or include_similar:
+            status_matches = status_set and p.status in status_set
             similar_matches = include_similar and pid in duplicate_pid_set
             if not (status_matches or similar_matches):
                 continue
-        if tags_filter and not any(tag in p.tags for tag in tags_filter):
+        if tags_set and tags_set.isdisjoint(p.tags):
             continue
         matches.append((pid, p))
     return sorted(matches, key=lambda x: x[1].title)
