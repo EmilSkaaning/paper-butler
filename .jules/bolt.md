@@ -31,3 +31,6 @@ normalized every component to 0.0 and made `get_duplicate_pids` score identical 
 for dot products, `math.hypot(*a)` for L2 norms. Check whether `math` already has the operation
 before optimizing the Python-level expression; the stdlib version is usually faster *and* more
 numerically robust.
+## 2026-09-26 - Optimize Streamlit tight loops with set lookups
+**Learning:** `filter_papers` was experiencing $O(N)$ lookup overhead per item per property when iterating over lists using Python generator expressions (e.g., `any(tag in p.tags for tag in tags_filter)`) and implicitly compiling regular expressions (`re.match`) within the loop. In Streamlit's heavy rerun model, these loops run continuously.
+**Action:** Lift static array conversions and Regex compilation out of tight loops. We updated `filter_papers` to pre-compile the `PAPER_ID_PATTERN` and convert `tags_filter` / `status_filter` to Sets. This allowed replacing the slower inner generator with a C-optimized `isdisjoint()` call and transformed the filter list lookups into $O(1)$ set checks, eliminating unnecessary Python-level iteration overhead.
